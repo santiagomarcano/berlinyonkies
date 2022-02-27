@@ -6,6 +6,5 @@ typechain
 
 #Hardhat files
 cache
-artifacts
 collection/*.png
 .next
