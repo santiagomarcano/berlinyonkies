@@ -26,13 +26,22 @@ contract NFT is ERC721URIStorage, Ownable {
     address proxyRegistryAddress;
 
     constructor(
+        string memory _name,
+        string memory _symbol,
         string memory _BASE_TOKEN_URI,
         uint256 _MAX_ELEMENTS,
         address _proxyRegistryAddress
-    ) ERC721("Item", "ITM") {
+    ) ERC721(_name, _symbol) {
         proxyRegistryAddress = _proxyRegistryAddress;
         BASE_TOKEN_URI = _BASE_TOKEN_URI;
         MAX_ELEMENTS = _MAX_ELEMENTS;
+    }
+
+    mapping(address => bool) private freeMints;
+
+    modifier onlyOneFreeMint() {
+        require(freeMints[msg.sender] == false, "Maxed freemint");
+        _;
     }
 
     modifier onlyMintable() {
@@ -63,6 +72,7 @@ contract NFT is ERC721URIStorage, Ownable {
     function mint(address player) public onlyMintable returns (uint256) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
+        freeMints[msg.sender] = true;
         _safeMint(player, newItemId);
         _setTokenURI(
             newItemId,
