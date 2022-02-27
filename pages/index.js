@@ -51,7 +51,7 @@ function Mint () {
   return (
     <>
       {balance && <div>{balance}</div>}
-      <div onClick={handleMint}>Mint!</div>
+      <button onClick={handleMint}>Mint!</button>
     </>
   )
 }
