@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+import "hardhat/console.sol";
+
 contract OwnableDelegateProxy {}
 
 /**
@@ -16,12 +18,15 @@ contract ProxyRegistry {
     mapping(address => OwnableDelegateProxy) public proxies;
 }
 
-contract NFT is ERC721URIStorage, Ownable {
+contract TheBadYonkies is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     uint256 MAX_ELEMENTS;
     string BASE_TOKEN_URI;
+    uint256 PRICE;
     bool paused = false;
+
+    event Minted(address player, uint256 tokenId);
 
     address proxyRegistryAddress;
 
@@ -30,11 +35,13 @@ contract NFT is ERC721URIStorage, Ownable {
         string memory _symbol,
         string memory _BASE_TOKEN_URI,
         uint256 _MAX_ELEMENTS,
+        uint256 _PRICE,
         address _proxyRegistryAddress
     ) ERC721(_name, _symbol) {
         proxyRegistryAddress = _proxyRegistryAddress;
         BASE_TOKEN_URI = _BASE_TOKEN_URI;
         MAX_ELEMENTS = _MAX_ELEMENTS;
+        PRICE = _PRICE;
     }
 
     mapping(address => bool) private freeMints;
@@ -46,7 +53,7 @@ contract NFT is ERC721URIStorage, Ownable {
 
     modifier onlyMintable() {
         require(
-            _tokenIds.current() < MAX_ELEMENTS,
+            _tokenIds.current() <= MAX_ELEMENTS,
             "Can't exceed MAX_ELEMENTS"
         );
         require(paused == false, "Sorry, paused minting :(");
@@ -65,11 +72,20 @@ contract NFT is ERC721URIStorage, Ownable {
         return paused;
     }
 
+    function getPrice() public view returns (uint256) {
+        return PRICE;
+    }
+
     function pause(bool status) public onlyOwner {
         paused = status;
     }
 
-    function mint(address player) public onlyMintable returns (uint256) {
+    function freeMint(address player)
+        public
+        onlyMintable
+        onlyOneFreeMint
+        returns (uint256)
+    {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         freeMints[msg.sender] = true;
@@ -84,6 +100,33 @@ contract NFT is ERC721URIStorage, Ownable {
                 )
             )
         );
+        emit Minted(msg.sender, newItemId);
+        return newItemId;
+    }
+
+    function mint(address player)
+        public
+        payable
+        onlyMintable
+        returns (uint256)
+    {
+        _tokenIds.increment();
+        uint256 newItemId = _tokenIds.current();
+        freeMints[msg.sender] = true;
+        console.log(msg.value, PRICE);
+        require(msg.value >= PRICE, "Insuficient amount");
+        _safeMint(player, newItemId);
+        _setTokenURI(
+            newItemId,
+            string(
+                bytes.concat(
+                    bytes(BASE_TOKEN_URI),
+                    "/",
+                    bytes(Strings.toString(newItemId))
+                )
+            )
+        );
+        emit Minted(msg.sender, newItemId);
         return newItemId;
     }
 

@@ -3,6 +3,8 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
+const { BigNumber } = require('ethers')
+const { ethers } = require('hardhat')
 const hre = require('hardhat')
 
 async function main () {
@@ -18,10 +20,13 @@ async function main () {
   const proxyRegistryAddress = '0x58807bad0b376efc12f5ad86aac70e78ed67deae'
 
   // We get the contract to deploy
-  const NFT = await hre.ethers.getContractFactory('NFT')
+  const NFT = await hre.ethers.getContractFactory('TheBadYonkies')
   const nft = await NFT.deploy(
+    'The Bad Yonkies',
+    'TBY',
     BASE_TOKEN_URI,
     MAX_ELEMENTS,
+    BigNumber.from('25000000000000000'), // 0.025 Ether
     proxyRegistryAddress
   )
 

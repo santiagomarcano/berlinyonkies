@@ -18,13 +18,19 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  defaultNetwork: 'mumbai',
+  defaultNetwork: 'localhost',
   networks: {
     mumbai: {
       url: 'https://rpc-mumbai.maticvigil.com',
       accounts: [process.env.ADD_PRIVATE_KEY],
       gasPrice: 8000000000
     }
+    // hardhat: {
+    //   // accounts: {
+    //   //   mnemonic,
+    //   // },
+    //   chainId: chainIds.hardhat
+    // }
   },
   solidity: '0.8.4'
 }

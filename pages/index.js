@@ -1,57 +1,103 @@
+import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
+import { getInterfaces, store } from '../store'
 import { ethers } from 'ethers'
-import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
-
-const contractAddress = '0xb20815eee0efc23b8c9fdd9ad002b2bc2f03d10a'
-// // Show metamask for users to decide if they will pay or not
-async function requestAccount (provider) {
-  try {
-    // Prompt user for account connections
-    await provider.send('eth_requestAccounts', [])
-  } catch (error) {
-    console.log('error')
-    console.error(error)
-    alert('Login to Metamask first')
-  }
-}
-
-function safeWindow () {
-  if (typeof window !== 'undefined') {
-    return window
-  }
-  return {}
-}
 
 function Mint () {
-  const [contract, setContract] = useState(null)
-  const [signer, setSigner] = useState(null)
-  const [balance, setBalance] = useState(null)
+  // const search = new URLSearchParams(window.location.search)
+  const [
+    { contract, signer, contractBalance, provider, tokenPrice, paused },
+    setInterfaces
+  ] = useAtom(store)
+  const [transaction, setTransaction] = useState(null)
+
   useEffect(() => {
+    console.log('We declare...')
     ;(async () => {
-      if (typeof window.ethereum !== 'undefined') {
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const contract = new ethers.Contract(contractAddress, NFT.abi, provider)
-        const signerInstance = provider.getSigner()
-        await requestAccount(provider)
-        setSigner(signerInstance)
-        setContract(contract)
-        const balanceOf = await contract.balanceOf(
-          await signerInstance.getAddress()
-        )
-        setBalance(balanceOf.toString())
-      }
+      const int = await getInterfaces()
+      int.contract.removeAllListeners()
+      int.contract.on('Minted', () => {
+        console.log('Minted event')
+        setTransaction(null)
+        const balances = [
+          int.contract.balanceOf(int.signer.address),
+          int.provider.getBalance(int.contract.address)
+        ]
+        Promise.all(balances).then(([signerBalance, contractBalance]) => {
+          setInterfaces(prev => {
+            const next = {
+              ...prev,
+              signer: {
+                ...prev.signer,
+                balance: signerBalance.toString()
+              },
+              contractBalance: ethers.utils.formatEther(contractBalance)
+            }
+            return next
+          })
+        })
+      })
+      setInterfaces(int)
     })()
   }, [])
 
+  async function handleFreeMint () {
+    try {
+      const result = await contract
+        .connect(signer.instance)
+        .freeMint(signer.address)
+      setTransaction(result.hash)
+    } catch (err) {
+      if (
+        (err.message && err.message.includes('Maxed freemint')) ||
+        (err.data && err.data.message.includes('Maxed freemint'))
+      ) {
+        alert('You already did that')
+      }
+      if (err.data.message.includes('Sorry, paused minting :(')) {
+        alert('Paused minting')
+      }
+    }
+  }
+
   async function handleMint () {
-    const address = await signer.getAddress()
-    await contract.connect(signer).mint(address)
+    try {
+      const price = await contract.getPrice()
+      const result = await contract
+        .connect(signer.instance)
+        .mint(signer.address, {
+          value: ethers.BigNumber.from(price.toString())
+        })
+      setTransaction(result.hash)
+    } catch (err) {
+      if (err.data.message.includes('Sorry, paused minting :(')) {
+        alert('Paused minting')
+      }
+    }
+  }
+
+  async function handlePause () {
+    try {
+      await contract.connect(signer.instance).pause(!paused)
+    } catch (err) {
+      alert(err)
+    }
   }
 
   return (
     <>
-      {balance && <div>{balance}</div>}
-      <button onClick={handleMint}>Mint!</button>
+      <div>Paused {paused ? 'YES' : 'NO'}</div>
+      <div>Owner {signer.isOwner ? 'YES' : 'NO'}</div>
+      <div>Your NFT Balance: {signer.balance}</div>
+      <div>Your address: {signer.address}</div>
+      <div>Contract Balance: {contractBalance}</div>
+      <div>Token price: {tokenPrice}</div>
+      <div>Contract address: {contract.address}</div>
+      {transaction && <div>Current transaction: {transaction}</div>}
+      {signer.isOwner && <button onClick={handlePause}>Pause</button>}
+
+      <button onClick={handleFreeMint}>Free Mint!</button>
+      <button onClick={handleMint}>Paid mint</button>
     </>
   )
 }
