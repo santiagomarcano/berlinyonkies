@@ -12,7 +12,6 @@ function Mint () {
   const [transaction, setTransaction] = useState(null)
 
   useEffect(() => {
-    console.log('We declare...')
     ;(async () => {
       const int = await getInterfaces()
       int.contract.removeAllListeners()

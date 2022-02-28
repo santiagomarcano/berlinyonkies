@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { ethers } from 'ethers'
 import TheBadYonkies from '../artifacts/contracts/NFT.sol/TheBadYonkies.json'
-const contractAddress = '0x3aa5ebb10dc797cac828524e59a333d0a371443c'
+const contractAddress = '0x0b7089dd3a6ce4c8bd8f62b70cafe215fbbebd32'
 
 async function requestAccount (provider) {
   try {

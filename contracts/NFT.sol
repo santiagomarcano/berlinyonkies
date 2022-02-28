@@ -60,6 +60,10 @@ contract TheBadYonkies is ERC721URIStorage, Ownable {
         _;
     }
 
+    function contractURI() public view returns (string memory) {
+        return BASE_TOKEN_URI;
+    }
+
     function baseTokenURI() public view returns (string memory) {
         return BASE_TOKEN_URI;
     }
