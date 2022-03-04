@@ -5,7 +5,7 @@ import { getInterfaces, store } from '../store'
 import { ethers } from 'ethers'
 import Image from 'next/image'
 import avatar from '../assets/images/14.png'
-console.log(ReactDOM)
+
 function NavBar () {
   const [
     { contract, signer, contractBalance, provider, tokenPrice, paused, price },
