@@ -6,6 +6,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/interfaces/IERC2981.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "hardhat/console.sol";
 
@@ -18,13 +21,15 @@ contract ProxyRegistry {
     mapping(address => OwnableDelegateProxy) public proxies;
 }
 
-contract TheBadYonkies is ERC721URIStorage, Ownable {
+contract BerlinYonkies is ERC721URIStorage, IERC2981, ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     uint256 MAX_ELEMENTS;
     string BASE_TOKEN_URI;
     uint256 PRICE;
     bool paused = false;
+    address public beneficiary;
+    address public royalties;
 
     event Minted(address player, uint256 tokenId);
 
@@ -33,11 +38,15 @@ contract TheBadYonkies is ERC721URIStorage, Ownable {
     constructor(
         string memory _name,
         string memory _symbol,
+        address _royalties,
+        address _beneficiary,
         string memory _BASE_TOKEN_URI,
         uint256 _MAX_ELEMENTS,
         uint256 _PRICE,
         address _proxyRegistryAddress
     ) ERC721(_name, _symbol) {
+        royalties = _royalties;
+        beneficiary = _beneficiary;
         proxyRegistryAddress = _proxyRegistryAddress;
         BASE_TOKEN_URI = _BASE_TOKEN_URI;
         MAX_ELEMENTS = _MAX_ELEMENTS;
@@ -84,10 +93,15 @@ contract TheBadYonkies is ERC721URIStorage, Ownable {
         paused = status;
     }
 
+    function withdraw() public onlyOwner {
+        payable(beneficiary).transfer(address(this).balance);
+    }
+
     function freeMint(address player)
         public
         onlyMintable
         onlyOneFreeMint
+        nonReentrant
         returns (uint256)
     {
         _tokenIds.increment();
@@ -112,6 +126,7 @@ contract TheBadYonkies is ERC721URIStorage, Ownable {
         public
         payable
         onlyMintable
+        nonReentrant
         returns (uint256)
     {
         _tokenIds.increment();
@@ -132,6 +147,30 @@ contract TheBadYonkies is ERC721URIStorage, Ownable {
         );
         emit Minted(msg.sender, newItemId);
         return newItemId;
+    }
+
+    // ERC165
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, IERC165)
+        returns (bool)
+    {
+        return
+            interfaceId == type(IERC2981).interfaceId ||
+            super.supportsInterface(interfaceId);
+    }
+
+    // IERC2981
+    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
+        external
+        view
+        override
+        returns (address, uint256 royaltyAmount)
+    {
+        _tokenId; // silence solc warning
+        royaltyAmount = (_salePrice / 100) * 5;
+        return (royalties, royaltyAmount);
     }
 
     /**

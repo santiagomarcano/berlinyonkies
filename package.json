@@ -3,10 +3,13 @@
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
     "@nomiclabs/hardhat-waffle": "^2.0.2",
+    "autoprefixer": "^10.4.2",
     "chai": "^4.3.6",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.4",
-    "hardhat": "^2.8.4"
+    "hardhat": "^2.8.4",
+    "postcss": "^8.4.5",
+    "tailwindcss": "^3.0.23"
   },
   "scripts": {
     "dev": "next dev",
@@ -14,11 +17,14 @@
     "start": "next start",
     "lint": "next lint",
     "ct": "npx hardhat compile && npx hardhat test",
-    "cdl": "npx hardhatcompile && npx hardhat run scripts/deploy.js --network localhost",
-    "cdtn": "npx hardhatcompile && npx hardhat run scripts/deploy.js --network mumbai",
-    "cdtm": "npx hardhatcompile && npx hardhat run scripts/deploy.js --network mainnet"
+    "cdl": "npx hardhat compile && npx hardhat run scripts/deploy.js --network localhost",
+    "cdtn": "npx hardhat compile && npx hardhat run scripts/deploy.js --network mumbai",
+    "cdtm": "npx hardhat compile && npx hardhat run scripts/deploy.js --network mainnet",
+    "cdtbsc": "npx hardhat compile && npx hardhat run scripts/deploy.js --network bsctestnet",
+    "deploy:rinkeby": "npx hardhat compile && npx hardhat run scripts/deploy.js --network rinkeby"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.5.0",
     "@pinata/sdk": "^1.1.23",
     "dotenv": "^16.0.0",
     "jotai": "^1.6.0",

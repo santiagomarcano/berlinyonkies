@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { ethers } from 'ethers'
-import TheBadYonkies from '../artifacts/contracts/NFT.sol/TheBadYonkies.json'
-const contractAddress = '0x0b7089dd3a6ce4c8bd8f62b70cafe215fbbebd32'
+import BerlinYonkies from '../artifacts/contracts/NFT.sol/BerlinYonkies.json'
+const contractAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
 
 async function requestAccount (provider) {
   try {
@@ -19,7 +19,7 @@ async function getInterfaces () {
     const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
     const contract = new ethers.Contract(
       contractAddress,
-      TheBadYonkies.abi,
+      BerlinYonkies.abi,
       provider
     )
     const signerInstance = provider.getSigner()

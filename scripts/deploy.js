@@ -14,21 +14,25 @@ async function main () {
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
   // await hre.run('compile');
-  const name = 'The Bad Yonkies'
-  const symbol = 'TBY'
+  const name = 'Berlin Yonkies'
+  const symbol = 'BYK'
+  const royaltiesAddress = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+  const beneficiaryAddress = '0x2f29d69c11061712cc8cdf9d6270186888e31f2d'
   const MAX_ELEMENTS = 2000
-  const BASE_TOKEN_URI =
-    'https://the-bad-yonkies-dm8dd73be-sayesito.vercel.app/api/metadata'
+  const PRICE = BigNumber.from('25000000000000000')
+  const BASE_TOKEN_URI = 'https://the-bad-yonkies.vercel.app/api/metadata'
   const proxyRegistryAddress = '0x58807bad0b376efc12f5ad86aac70e78ed67deae'
 
   // We get the contract to deploy
-  const NFT = await hre.ethers.getContractFactory('TheBadYonkies')
+  const NFT = await hre.ethers.getContractFactory('BerlinYonkies')
   const nft = await NFT.deploy(
     name,
     symbol,
+    royaltiesAddress,
+    beneficiaryAddress,
     BASE_TOKEN_URI,
     MAX_ELEMENTS,
-    BigNumber.from('25000000000000000'), // 0.025 Ether
+    PRICE, // 0.025 Ether
     proxyRegistryAddress
   )
 

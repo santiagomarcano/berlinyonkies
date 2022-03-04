@@ -1,8 +1,7 @@
 export default function handler (req, res) {
   return res.json({
-    name: 'OpenSea Creatures',
-    description:
-      'OpenSea Creatures are adorable aquatic beings primarily for demonstrating what can be done using the OpenSea platform. Adopt one today to try out all the OpenSea buying, selling, and bidding feature set.',
+    name: 'The Bad Yonkies',
+    description: '.....',
     image: 'https://openseacreatures.io/image.png',
     external_link: 'https://openseacreatures.io',
     seller_fee_basis_points: 100,

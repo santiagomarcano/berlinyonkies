@@ -23,7 +23,17 @@ module.exports = {
     mumbai: {
       url: 'https://rpc-mumbai.maticvigil.com',
       accounts: [process.env.ADD_PRIVATE_KEY],
-      gasPrice: 8000000000
+      gasPrice: 35000000000
+    },
+    bsctestnet: {
+      url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+      chainId: 97,
+      gasPrice: 20000000000,
+      accounts: [process.env.ADD_PRIVATE_KEY]
+    },
+    rinkeby: {
+      url: 'https://rinkeby.infura.io/v3/3a57146e93d3454e8751164880ede71e',
+      accounts: [process.env.ADD_PRIVATE_KEY]
     }
     // hardhat: {
     //   // accounts: {
