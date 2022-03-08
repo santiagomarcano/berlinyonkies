@@ -1,6 +1,6 @@
 import React from 'react'
 import Main from '../components/Main'
-import NavBar from '../components/Navbar'
+import NavBar from '../components/NavBar'
 
 function Landing () {
   return (
