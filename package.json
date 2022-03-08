@@ -21,7 +21,8 @@
     "cdtn": "npx hardhat compile && npx hardhat run scripts/deploy.js --network mumbai",
     "cdtm": "npx hardhat compile && npx hardhat run scripts/deploy.js --network mainnet",
     "cdtbsc": "npx hardhat compile && npx hardhat run scripts/deploy.js --network bsctestnet",
-    "deploy:rinkeby": "npx hardhat compile && npx hardhat run scripts/deploy.js --network rinkeby"
+    "deploy:rinkeby": "npx hardhat compile && npx hardhat run scripts/deploy.js --network rinkeby",
+    "node": "export NODE_OPTIONS=--openssl-legacy-provider && npx hardhat node"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",

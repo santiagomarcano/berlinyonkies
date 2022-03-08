@@ -17,7 +17,15 @@ module.exports = {
       black: '#0E1A28ff',
       bolive: '#4d493aff'
     },
-    extend: {}
+    extend: {
+      height: {
+        nav: '10vh',
+        main: '90vh'
+      },
+      minHeight: {
+        main: '90vh'
+      }
+    }
   },
   plugins: []
 }
