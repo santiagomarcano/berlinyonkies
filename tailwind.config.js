@@ -8,6 +8,7 @@ module.exports = {
     fontFamily: {
       pixel: ['PixelArt-Regular'],
       sans: ['OpenSans'],
+      sansbold: ['OpenSans-Bold'],
       huballi: ['Hubballi']
     },
     colors: {
@@ -15,7 +16,8 @@ module.exports = {
       white: '#e3d4adff',
       grullo: '#ac9f7fff',
       black: '#0E1A28ff',
-      bolive: '#4d493aff'
+      bolive: '#4d493aff',
+      screamingreen: '#7eff7bff'
     },
     extend: {
       height: {

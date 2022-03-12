@@ -1,7 +1,8 @@
 import { atom } from 'jotai'
 import { ethers } from 'ethers'
 import BerlinYonkies from '../artifacts/contracts/NFT.sol/BerlinYonkies.json'
-const contractAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
+const contractAddress = process.env.CONTRACT_ADDRESS
+const isOpen = process.env.IS_OPEN
 
 async function requestAccount () {
   try {
@@ -20,13 +21,71 @@ async function requestAccount () {
   }
 }
 
+const chains = {
+  80001: {
+    // mumbai
+    method: 'wallet_addEthereumChain',
+    params: [
+      {
+        chainId: '0x13881',
+        rpcUrls: ['https://rpc-mainnet.matic.network/'],
+        chainName: 'Matic Mainnet',
+        nativeCurrency: {
+          name: 'MATIC',
+          symbol: 'MATIC',
+          decimals: 18
+        },
+        blockExplorerUrls: ['https://polygonscan.com/']
+      }
+    ]
+  },
+  137: {
+    //polygon mainnet
+    method: 'wallet_addEthereumChain',
+    params: [
+      {
+        chainId: '0x89',
+        rpcUrls: ['https://rpc-mainnet.matic.network/'],
+        chainName: 'Matic Mainnet',
+        nativeCurrency: {
+          name: 'MATIC',
+          symbol: 'MATIC',
+          decimals: 18
+        },
+        blockExplorerUrls: ['https://polygonscan.com/']
+      }
+    ]
+  },
+  31337: {
+    //polygon mainnet
+    method: 'wallet_addEthereumChain',
+    params: [
+      {
+        // chainId: 31337,
+        rpcUrls: ['http://127.0.0.1:8545/'],
+        chainName: 'HARDHAT',
+        nativeCurrency: {
+          name: 'ETH',
+          symbol: 'ETH',
+          decimals: 18
+        }
+        // blockExplorerUrls: ['https://polygonscan.com/']
+      }
+    ]
+  }
+}
+
 async function getInterfaces (provider) {
+  const { chainId } = await provider.getNetwork()
+  // Please choose correct network
+  if ((chainId !== process.env.NEXT_PUBLIC_CHAIN_ID) !== 31337) {
+    await window.ethereum.request(chains[process.env.NEXT_PUBLIC_CHAIN_ID])
+  }
   const contract = new ethers.Contract(
-    contractAddress,
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
     BerlinYonkies.abi,
     provider
   )
-  console.log('provider is', provider)
   const signerInstance = provider.getSigner()
   const address = await signerInstance.getAddress()
   const balance = await contract.balanceOf(address)

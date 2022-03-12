@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react'
 import { getInterfaces, requestAccount, store } from '../store'
 import Button from './Button'
 import Modal from './Modal'
+import SocialMedia from './SocialMedia'
 
-export default function NavBar () {
+const OPEN_SALES = !!Number(process.env.NEXT_PUBLIC_IS_OPEN)
+
+export default function NavBar ({ countDown }) {
   const [
     { contract, signer, contractBalance, tokenPrice, paused, price },
     setInterfaces
@@ -15,7 +18,7 @@ export default function NavBar () {
   const [isOpen, setIsOpen] = useState({ children: null })
 
   useEffect(() => {
-    if (typeof window.ethereum !== 'undefined') {
+    if (typeof window.ethereum !== 'undefined' && OPEN_SALES) {
       connectWallet()
     }
   }, [])
@@ -48,7 +51,6 @@ export default function NavBar () {
       })
       return
     }
-    initializeWeb3Stuff(p)
   }
 
   async function initializeWeb3Stuff (p) {
@@ -142,37 +144,48 @@ export default function NavBar () {
       // }
     }
   }
-
   return (
     <nav
-      className={`flex p-4 tracking-widest font-pixel text-primary h-nav ${
+      className={`flex tracking-widest font-pixel items-center text-primary bg-black h-nav ${
         contract.address || !provider ? 'scaleIn' : 'opacity-0'
-      } ${provider ? 'justify-between' : 'justify-end'}`}
+      } justify-between`}
     >
-      {provider ? (
-        <>
-          <h2 className='text-4xl'>BYK - {signer.balance}</h2>
-          <div className='flex'>
-            <Button
-              onClick={handleFreeMint}
-              label='Free Mint'
-              className='w-full mr-2'
-            />
-            <Button
-              label={`MINT \n ${price && ethers.utils.formatEther(price)}`}
-              className='w-full bg-grullo'
-              onClick={handleMint}
-            />
-          </div>
-        </>
-      ) : (
-        <div className='flex justify-end delayed'>
-          <Button
-            label='Connect Wallet'
-            className='w-full bg-grullo'
-            onClick={connectWallet}
-          />
+      <SocialMedia />
+      {!OPEN_SALES ? (
+        <div className='flex flex-col items-end'>
+          <h2 className='text-2xl text-white'>Mint Date: {countDown.date}</h2>
+          <h3 className='text-2xl text-gradient'>
+            Seconds left: {countDown.seconds}
+          </h3>
         </div>
+      ) : (
+        <>
+          {provider ? (
+            <>
+              <h2 className='text-4xl'>BYK - {signer.balance}</h2>
+              <div className='flex'>
+                <Button
+                  onClick={handleFreeMint}
+                  label='Free Mint'
+                  className='w-full mr-2'
+                />
+                <Button
+                  label={`MINT \n ${price && ethers.utils.formatEther(price)}`}
+                  className='w-full bg-grullo'
+                  onClick={handleMint}
+                />
+              </div>
+            </>
+          ) : (
+            <div className='flex justify-end delayed'>
+              <Button
+                label='Connect Wallet'
+                className='w-full bg-grullo'
+                onClick={connectWallet}
+              />
+            </div>
+          )}
+        </>
       )}
       <Modal isOpen={isOpen.children} onClose={() => setIsOpen(false)}>
         {isOpen.children}

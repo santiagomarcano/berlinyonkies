@@ -33,11 +33,31 @@ body {
 }
 
 @font-face {
+  font-family: OpenSans-Bold;
+  src: url('OpenSans-Bold.ttf');
+  font-style: normal;
+  font-weight: bold;
+}
+
+main {
+  z-index: 5;
+}
+
+.banner::after {
+  content: '';
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* 
+@font-face {
   font-family: Hubballi;
   src: url('Hubballi.ttf');
   font-style: normal;
   font-weight: 100;
-}
+} */
 
 .custom-shadow {
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
@@ -59,6 +79,19 @@ body {
   }
   to {
     -webkit-filter: hue-rotate(-360deg);
+  }
+}
+
+.bounce {
+  animation: bounce 1.5s ease-in-out alternate infinite;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(-2vh);
+  }
+  to {
+    transform: translateY(0vh);
   }
 }
 
