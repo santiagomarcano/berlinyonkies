@@ -153,8 +153,10 @@ export default function NavBar ({ countDown }) {
       <SocialMedia />
       {!OPEN_SALES ? (
         <div className='flex flex-col items-end'>
-          <h2 className='text-2xl text-white'>Mint Date: {countDown.date}</h2>
-          <h3 className='text-2xl text-gradient'>
+          <h2 className='text-sm text-right text-white md:text-2xl'>
+            Mint Date: {countDown.date}
+          </h2>
+          <h3 className='text-sm text-right md:text-2xl text-gradient'>
             Seconds left: {countDown.seconds}
           </h3>
         </div>

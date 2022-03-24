@@ -79,24 +79,30 @@ export default function Main () {
             }
           })}
         </div>
-        <h1 className='mb-4 text-6xl tracking-widest text-center font-pixel text-gradient'>
-          BERLIN YONKIES
-        </h1>
-        <h3 className='max-w-4xl font-sans text-xl font-bold tracking-widest text-center text-white uppercase'>
-          <span className='font-bold font-sansbold text-gradient'>
-            Berlin Yonkies
-          </span>{' '}
-          is a 10,000 NFT Art Collection inspired by the Berlin Nightlife
-          powered by the{' '}
-          <span
-            className='font-bold font-sansbold'
-            style={{ color: '#8347E5' }}
-          >
-            Polygon
-          </span>{' '}
-          Network and listed <br /> in <span>OpenSea</span> and{' '}
-          <span>Rariable</span>
-        </h3>
+        <div className='text-base'>
+          <h1 className='mb-4 text-3xl tracking-widest text-center md:text-6xl font-pixel text-gradient'>
+            BERLIN YONKIES
+          </h1>
+          <h3 className='max-w-4xl font-sans text-base text-xl font-bold tracking-widest text-center text-white uppercase'>
+            <span className='text-base font-bold font-sansbold text-gradient'>
+              Berlin Yonkies
+            </span>{' '}
+            <span className='text-base'>
+              is a 10,000 NFT Art Collection inspired by the Berlin Nightlife
+              powered by the
+            </span>{' '}
+            <span
+              className='text-base font-bold font-sansbold'
+              style={{ color: '#8347E5' }}
+            >
+              Polygon
+            </span>{' '}
+            <span className='text-base'>
+              Network and listed <br /> in <span>OpenSea</span> and{' '}
+              <span>Rariable</span>
+            </span>
+          </h3>
+        </div>
       </main>
       {/* <div className='absolute relative left-0 right-0 flex justify-center w-full h-24 h-full cursor-pointer bounce text-gradient'>
         <div className='relative'>
@@ -128,10 +134,10 @@ export default function Main () {
               </div>
             ))}
         </div>
-        <span className='mb-8 text-4xl tracking-widest text-center text-white uppercase font-pixel text-gradient'>
+        <span className='mb-8 text-2xl tracking-widest text-center text-white uppercase md:text-4xl font-pixel text-gradient'>
           Designer’s words
         </span>
-        <p className='max-w-4xl leading-loose text-center text-white'>
+        <p className='max-w-4xl px-4 leading-loose text-center text-white md:text-lg md:px-0'>
           “During my trip in Berlin I was fascinated by its Nightlife, wild and
           respectful at the same time, rebellious but also educated. I’m not
           just talking about the parties and the bars, even the squares,
@@ -143,37 +149,40 @@ export default function Main () {
         </p>
       </section>
       <section className='flex flex-col justify-center'>
-        <h3 className='my-12 text-3xl text-center uppercase font-pixel text-screamingreen'>
+        <h3 className='my-12 text-2xl text-center uppercase md:text-3xl font-pixel text-screamingreen'>
           Powered by
         </h3>
         <div className='flex justify-center'>
-          <img
-            className='w-1/5 mx-4'
-            style={{ width: '9%' }}
-            src='https://storage.googleapis.com/opensea-static/Logomark/Logomark-Blue.svg'
-          />
-          <img
-            className='w-1/5 mx-4'
-            style={{ width: '10%' }}
-            src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png?20201112074605'
-          />
-          <svg
-            className='w-1/5 mx-4'
-            style={{ width: '10%', fill: '#8247e5' }}
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 38.4 33.5'
-            // style='enable-background:new 0 0 38.4 33.5'
-            // xml:space='preserve'
-          >
-            <path
-              d='M29 10.2c-.7-.4-1.6-.4-2.4 0L21 13.5l-3.8 2.1-5.5 3.3c-.7.4-1.6.4-2.4 0L5 16.3c-.7-.4-1.2-1.2-1.2-2.1v-5c0-.8.4-1.6 1.2-2.1l4.3-2.5c.7-.4 1.6-.4 2.4 0L16 7.2c.7.4 1.2 1.2 1.2 2.1v3.3l3.8-2.2V7c0-.8-.4-1.6-1.2-2.1l-8-4.7c-.7-.4-1.6-.4-2.4 0L1.2 5C.4 5.4 0 6.2 0 7v9.4c0 .8.4 1.6 1.2 2.1l8.1 4.7c.7.4 1.6.4 2.4 0l5.5-3.2 3.8-2.2 5.5-3.2c.7-.4 1.6-.4 2.4 0l4.3 2.5c.7.4 1.2 1.2 1.2 2.1v5c0 .8-.4 1.6-1.2 2.1L29 28.8c-.7.4-1.6.4-2.4 0l-4.3-2.5c-.7-.4-1.2-1.2-1.2-2.1V21l-3.8 2.2v3.3c0 .8.4 1.6 1.2 2.1l8.1 4.7c.7.4 1.6.4 2.4 0l8.1-4.7c.7-.4 1.2-1.2 1.2-2.1V17c0-.8-.4-1.6-1.2-2.1L29 10.2z'
-              // style='fill:#8247e5'
+          <div className='mx-2 w-50 md:w-100'>
+            <img
+              style={{ width: '100%' }}
+              src='https://storage.googleapis.com/opensea-static/Logomark/Logomark-Blue.svg'
             />
-          </svg>
+          </div>
+          <div className='mx-2 w-50 md:w-100'>
+            <img
+              style={{ width: '100%' }}
+              src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png?20201112074605'
+            />
+          </div>
+          <div className='mx-2 w-50 md:w-100'>
+            <svg
+              style={{ width: '100%', fill: '#8247e5' }}
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 38.4 33.5'
+              // style='enable-background:new 0 0 38.4 33.5'
+              // xml:space='preserve'
+            >
+              <path
+                d='M29 10.2c-.7-.4-1.6-.4-2.4 0L21 13.5l-3.8 2.1-5.5 3.3c-.7.4-1.6.4-2.4 0L5 16.3c-.7-.4-1.2-1.2-1.2-2.1v-5c0-.8.4-1.6 1.2-2.1l4.3-2.5c.7-.4 1.6-.4 2.4 0L16 7.2c.7.4 1.2 1.2 1.2 2.1v3.3l3.8-2.2V7c0-.8-.4-1.6-1.2-2.1l-8-4.7c-.7-.4-1.6-.4-2.4 0L1.2 5C.4 5.4 0 6.2 0 7v9.4c0 .8.4 1.6 1.2 2.1l8.1 4.7c.7.4 1.6.4 2.4 0l5.5-3.2 3.8-2.2 5.5-3.2c.7-.4 1.6-.4 2.4 0l4.3 2.5c.7.4 1.2 1.2 1.2 2.1v5c0 .8-.4 1.6-1.2 2.1L29 28.8c-.7.4-1.6.4-2.4 0l-4.3-2.5c-.7-.4-1.2-1.2-1.2-2.1V21l-3.8 2.2v3.3c0 .8.4 1.6 1.2 2.1l8.1 4.7c.7.4 1.6.4 2.4 0l8.1-4.7c.7-.4 1.2-1.2 1.2-2.1V17c0-.8-.4-1.6-1.2-2.1L29 10.2z'
+                // style='fill:#8247e5'
+              />
+            </svg>
+          </div>
         </div>
       </section>
       <footer className='flex flex-col items-center justify-center w-full my-24'>
-        <h3 className='mb-12 text-3xl font-pixel text-screamingreen'>
+        <h3 className='px-2 mb-12 text-2xl text-center md:text-3xl font-pixel text-screamingreen md:px-0'>
           Join our community
         </h3>
         <SocialMedia />

@@ -26,6 +26,14 @@ module.exports = {
       },
       minHeight: {
         main: '90vh'
+      },
+      width: {
+        30: '30px',
+        40: '40px',
+        50: '50px',
+        75: '75px',
+        100: '100px',
+        200: '200px'
       }
     }
   },
