@@ -10,6 +10,7 @@ import slide7 from '../assets/images/slide-7.png'
 import slide8 from '../assets/images/slide-8.png'
 import banner from '../assets/images/banner.png'
 import SocialMedia from './SocialMedia'
+import nftCalendarLogo from '../assets/images/nft-calendar.svg'
 
 const slideImages = [
   slide1,
@@ -180,8 +181,16 @@ export default function Main () {
             </svg>
           </div>
         </div>
+        <a href='https://nftcalendar.io' target="_blank">
+          <div className='flex flex-col items-center justify-center my-4 text-xl'>
+            <h3 className='text-center uppercase text-screamingreen font-pixel'>
+              As seen on
+            </h3>
+            <img className='w-1/4' src={nftCalendarLogo.src} />
+          </div>
+        </a>
       </section>
-      <footer className='flex flex-col items-center justify-center w-full my-24'>
+      <footer className='flex flex-col items-center justify-center w-full mb-24 mt-18'>
         <h3 className='px-2 mb-12 text-2xl text-center md:text-3xl font-pixel text-screamingreen md:px-0'>
           Join our community
         </h3>

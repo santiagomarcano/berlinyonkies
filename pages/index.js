@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Main from '../components/Main'
 import NavBar from '../components/NavBar'
 
-var RELEASE_DATE = new Date('2022-04-01 00:00')
+var RELEASE_DATE = new Date('2022-04-17 00:00')
 var RELEASE_DATE_UTC = Date.UTC(
   RELEASE_DATE.getUTCFullYear(),
   RELEASE_DATE.getUTCMonth(),
