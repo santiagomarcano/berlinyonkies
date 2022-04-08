@@ -181,7 +181,7 @@ export default function Main () {
             </svg>
           </div>
         </div>
-        <a href='https://nftcalendar.io' target="_blank">
+        <a href='https://nftcalendar.io/event/berlin-yonkies-nft-art-collection-free-mint-first-1000-collectibles-support-art-support-the-future-1/' target="_blank">
           <div className='flex flex-col items-center justify-center my-4 text-xl'>
             <h3 className='text-center uppercase text-screamingreen font-pixel'>
               As seen on
