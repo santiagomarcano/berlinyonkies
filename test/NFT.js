@@ -10,8 +10,9 @@ describe('NFT', function () {
   const royaltiesAddress = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
   const beneficiaryAddress = '0x2f29d69c11061712cc8cdf9d6270186888e31f2d'
   const MAX_ELEMENTS = 10000
-  const BASE_TOKEN_URI = 'https://the-bad-yonkies.vercel.app/api/metadata'
-  const PRICE = BigNumber.from('25000000000000000')
+  const MAX_FREE_MINT_ELEMENTS = 1000
+  const PRICE = BigNumber.from('2000000000000000000')
+  const BASE_TOKEN_URI = 'https://berlinyonkies.com/api/metadata'
   const proxyRegistryAddress = '0x58807bad0b376efc12f5ad86aac70e78ed67deae'
 
   let NFT, nft
@@ -24,6 +25,7 @@ describe('NFT', function () {
       beneficiaryAddress,
       BASE_TOKEN_URI,
       MAX_ELEMENTS,
+      MAX_FREE_MINT_ELEMENTS,
       PRICE,
       proxyRegistryAddress
     )
@@ -40,13 +42,30 @@ describe('NFT', function () {
 
   it('Should free mint', async function () {
     const accounts = await hre.ethers.getSigners()
-    await nft.freeMint(accounts[0].address)
+    await nft.freeMint()
     expect(await nft.balanceOf(accounts[0].address)).to.equal(1)
+  })
+
+  it('Should prevent free mint if MAX_FREE_MINT_ELEMENTS is reached', async () => {
+    const accounts = await hre.ethers.getSigners()
+
+    try {
+      await nft.connect(accounts[2]).freeMint()
+      await nft.connect(accounts[3]).freeMint()
+      await nft.connect(accounts[4]).freeMint()
+      // console.log('TRY!!')
+      console.log('Heree')
+    } catch (err) {
+      console.log('In error', err)
+      expect(err.message).to.contain('Maxed freemint')
+    }
+
+    // expect(await nft.balanceOf(accounts[0].address)).to.equal(1)
   })
 
   it('Should mint', async function () {
     const accounts = await hre.ethers.getSigners()
-    await nft.mint(accounts[0].address, {
+    await nft.mint({
       value: PRICE
     })
     expect(await nft.balanceOf(accounts[0].address)).to.equal(1)
@@ -71,7 +90,7 @@ describe('NFT', function () {
     const [owner, acc1] = await hre.ethers.getSigners()
     try {
       await nft.pause(true)
-      await nft.mint(acc1.address, {
+      await nft.mint({
         value: PRICE
       })
     } catch (err) {
@@ -81,14 +100,14 @@ describe('NFT', function () {
 
   it('Should mint and check tokenURI', async function () {
     const [owner, acc1] = await hre.ethers.getSigners()
-    await nft.mint(owner.address, {
+    await nft.mint({
       value: PRICE
     })
     // static just to retreive returns value
-    const tokenId = await nft.callStatic.mint(owner.address, {
+    const tokenId = await nft.callStatic.mint({
       value: PRICE
     })
-    await nft.mint(owner.address, {
+    await nft.mint({
       value: PRICE
     })
 
@@ -121,10 +140,10 @@ describe('NFT', function () {
   it('should transfer minted token', async () => {
     const [owner, acc1] = await hre.ethers.getSigners()
     // static just to retreive returns value
-    const tokenId = await nft.callStatic.mint(owner.address, {
+    const tokenId = await nft.callStatic.mint({
       value: PRICE
     })
-    await nft.mint(owner.address, {
+    await nft.mint({
       value: PRICE
     })
 

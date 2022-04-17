@@ -24,10 +24,12 @@ contract ProxyRegistry {
 contract BerlinYonkies is ERC721URIStorage, IERC2981, ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    Counters.Counter private _freeMints;
     uint256 MAX_ELEMENTS;
+    uint256 MAX_FREE_MINT_ELEMENTS;
     string BASE_TOKEN_URI;
     uint256 PRICE;
-    bool paused = false;
+    bool paused = true;
     address public beneficiary;
     address public royalties;
 
@@ -42,6 +44,7 @@ contract BerlinYonkies is ERC721URIStorage, IERC2981, ReentrancyGuard, Ownable {
         address _beneficiary,
         string memory _BASE_TOKEN_URI,
         uint256 _MAX_ELEMENTS,
+        uint256 _MAX_FREE_MINT_ELEMENTS,
         uint256 _PRICE,
         address _proxyRegistryAddress
     ) ERC721(_name, _symbol) {
@@ -51,6 +54,7 @@ contract BerlinYonkies is ERC721URIStorage, IERC2981, ReentrancyGuard, Ownable {
         BASE_TOKEN_URI = _BASE_TOKEN_URI;
         MAX_ELEMENTS = _MAX_ELEMENTS;
         PRICE = _PRICE;
+        MAX_FREE_MINT_ELEMENTS = _MAX_FREE_MINT_ELEMENTS;
     }
 
     mapping(address => bool) private freeMints;
@@ -77,6 +81,10 @@ contract BerlinYonkies is ERC721URIStorage, IERC2981, ReentrancyGuard, Ownable {
         return BASE_TOKEN_URI;
     }
 
+    function getCurrentSupply() public view returns (uint256) {
+        return _tokenIds.current();
+    }
+
     function getMaxElements() public view returns (uint256) {
         return MAX_ELEMENTS;
     }
@@ -97,17 +105,19 @@ contract BerlinYonkies is ERC721URIStorage, IERC2981, ReentrancyGuard, Ownable {
         payable(beneficiary).transfer(address(this).balance);
     }
 
-    function freeMint(address player)
+    function freeMint()
         public
         onlyMintable
         onlyOneFreeMint
         nonReentrant
         returns (uint256)
     {
+        require(_freeMints.current() < MAX_FREE_MINT_ELEMENTS, 'Maxed freemint');
         _tokenIds.increment();
+        _freeMints.increment();
         uint256 newItemId = _tokenIds.current();
         freeMints[msg.sender] = true;
-        _safeMint(player, newItemId);
+        _safeMint(msg.sender, newItemId);
         _setTokenURI(
             newItemId,
             string(
@@ -122,7 +132,7 @@ contract BerlinYonkies is ERC721URIStorage, IERC2981, ReentrancyGuard, Ownable {
         return newItemId;
     }
 
-    function mint(address player)
+    function mint()
         public
         payable
         onlyMintable
@@ -132,9 +142,8 @@ contract BerlinYonkies is ERC721URIStorage, IERC2981, ReentrancyGuard, Ownable {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         freeMints[msg.sender] = true;
-        console.log(msg.value, PRICE);
         require(msg.value >= PRICE, "Insuficient amount");
-        _safeMint(player, newItemId);
+        _safeMint(msg.sender, newItemId);
         _setTokenURI(
             newItemId,
             string(

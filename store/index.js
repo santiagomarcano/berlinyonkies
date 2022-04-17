@@ -68,8 +68,8 @@ const chains = {
           name: 'ETH',
           symbol: 'ETH',
           decimals: 18
-        }
-        // blockExplorerUrls: ['https://polygonscan.com/']
+        },
+        blockExplorerUrls: ['https://polygonscan.com/']
       }
     ]
   }
@@ -77,8 +77,10 @@ const chains = {
 
 async function getInterfaces (provider) {
   const { chainId } = await provider.getNetwork()
+  console.log(chainId)
   // Please choose correct network
-  if ((chainId !== process.env.NEXT_PUBLIC_CHAIN_ID) !== 31337) {
+  if (chainId !== Number(process.env.NEXT_PUBLIC_CHAIN_ID)) {
+    alert('Please change your network to Polygon')
     await window.ethereum.request(chains[process.env.NEXT_PUBLIC_CHAIN_ID])
   }
   const contract = new ethers.Contract(
@@ -106,7 +108,7 @@ async function getInterfaces (provider) {
     },
     contract,
     contractBalance: ethers.utils.formatEther(contractBalance),
-    tokenPrice: ethers.utils.formatEther(tokenPrice),
+    price: ethers.utils.formatEther(tokenPrice),
     paused
   }
 }

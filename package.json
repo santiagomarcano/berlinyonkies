@@ -22,6 +22,7 @@
     "cdtm": "npx hardhat compile && npx hardhat run scripts/deploy.js --network mainnet",
     "cdtbsc": "npx hardhat compile && npx hardhat run scripts/deploy.js --network bsctestnet",
     "deploy:rinkeby": "npx hardhat compile && npx hardhat run scripts/deploy.js --network rinkeby",
+    "build-production": "npx hardhat compile && npx hardhat run scripts/deploy.js --network polygon",
     "node": "export NODE_OPTIONS=--openssl-legacy-provider && npx hardhat node"
   },
   "dependencies": {

@@ -20,6 +20,11 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 module.exports = {
   defaultNetwork: 'localhost',
   networks: {
+    polygon: {
+      url: 'https://polygon-mainnet.g.alchemy.com/v2/EQPGpCYikNMbFBIrc8R7STBV9nepeLGV',
+      accounts: [process.env.ADD_PRIVATE_KEY],
+      gasPrice: 35000000000
+    },
     mumbai: {
       url: 'https://rpc-mumbai.maticvigil.com',
       accounts: [process.env.ADD_PRIVATE_KEY],

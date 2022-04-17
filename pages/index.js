@@ -46,8 +46,7 @@ function Landing () {
   return (
     <div className='min-h-screen'>
       <div
-        className='fixed top-0 left-0 right-0 bg-black delayed fadeIn'
-        style={{ background: 'red', zIndex: 12 }}
+        className='fixed top-0 left-0 right-0 bg-black delayed fadeIn z-10'
       >
         <NavBar countDown={countDown} />
       </div>

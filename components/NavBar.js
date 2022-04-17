@@ -23,9 +23,9 @@ export default function NavBar ({ countDown }) {
     }
   }, [])
 
+  
   async function connectWallet () {
     const p = await requestAccount()
-    setProvider(p)
     if (!p) {
       setIsOpen({
         children: (
@@ -51,42 +51,15 @@ export default function NavBar ({ countDown }) {
       })
       return
     }
-  }
-
-  async function initializeWeb3Stuff (p) {
-    const int = await getInterfaces(p)
-    int.contract.removeAllListeners()
-    int.contract.on('Minted', () => {
-      setTransaction(null)
-      const balances = [
-        int.contract.balanceOf(int.signer.address),
-        provider.getBalance(int.contract.address)
-      ]
-      Promise.all(balances).then(([signerBalance, contractBalance]) => {
-        setInterfaces(prev => {
-          const next = {
-            ...prev,
-            signer: {
-              ...prev.signer,
-              balance: signerBalance.toString()
-            },
-            contractBalance: ethers.utils.formatEther(contractBalance)
-          }
-          return next
-        })
-      })
-    })
-    const price = await int.contract.getPrice()
-    // setTimeout(() => {
-    setInterfaces({ price, ...int })
-    // }, 1500)
+    setProvider(p)
+    setInterfaces(await getInterfaces(p))
   }
 
   async function handleFreeMint () {
     try {
       const result = await contract
         .connect(signer.instance)
-        .freeMint(signer.address)
+        .freeMint()
       setTransaction(result.hash)
       setIsOpen({
         children: (
@@ -112,18 +85,18 @@ export default function NavBar ({ countDown }) {
       })
     } catch (err) {
       console.log(err)
-      // if (
-      //   (err.message && err.message.includes('Maxed freemint')) ||
-      //   (err.data && err.data.message.includes('Maxed freemint'))
-      // ) {
-      //   alert('You already did that')
-      // }
-      // if (
-      //   (err.data && err.data.message.includes('Sorry, paused minting :(')) ||
-      //   (err.message && err.message.includes('Sorry, paused minting :('))
-      // ) {
-      //   alert('Paused minting')
-      // }
+      if (
+        (err.message && err.message.includes('Maxed freemint')) ||
+        (err.data && err.data.message.includes('Maxed freemint'))
+      ) {
+        alert('You already did that')
+      }
+      if (
+        (err.data && err.data.message.includes('Sorry, paused minting :(')) ||
+        (err.message && err.message.includes('Sorry, paused minting :('))
+      ) {
+        alert('Paused minting')
+      }
     }
   }
 
@@ -132,13 +105,27 @@ export default function NavBar ({ countDown }) {
       const price = await contract.getPrice()
       const result = await contract
         .connect(signer.instance)
-        .mint(signer.address, {
+        .mint({
           value: ethers.BigNumber.from(price.toString())
         })
       setTransaction(result.hash)
       setIsOpen(true)
     } catch (err) {
-      console.log(err)
+      if (err.data.message.includes('Sorry, paused minting :(')) {
+        alert('Paused minting')
+      }
+      if (err.data.message.includes('insufficient funds')) {
+        alert('Insufficient funds')
+      }
+      
+    }
+  }
+  async function handlePauseMint() {
+    try {
+      const result = await contract.connect(signer.instance).pause(!paused)
+      alert(result)
+    } catch (err) {
+      alert(err)
       // if (err.data.message.includes('Sorry, paused minting :(')) {
       //   alert('Paused minting')
       // }
@@ -146,25 +133,27 @@ export default function NavBar ({ countDown }) {
   }
   return (
     <nav
-      className={`flex tracking-widest font-pixel items-center text-primary bg-black h-nav ${
-        contract.address || !provider ? 'scaleIn' : 'opacity-0'
+      className={`flex tracking-widest font-pixel items-center text-primary bg-black h-nav px-2 ${
+        contract.address || !provider ? 'scaleIn' : 'opacity-1'
       } justify-between`}
     >
-      <SocialMedia />
       {!OPEN_SALES ? (
-        <div className='flex flex-col items-end'>
-          <h2 className='text-sm text-right text-white md:text-2xl'>
-            Mint Date: {countDown.date}
-          </h2>
-          <h3 className='text-sm text-right md:text-2xl text-gradient'>
-            Seconds left: {countDown.seconds}
-          </h3>
-        </div>
+        <>
+          <SocialMedia />
+          <div className='flex flex-col items-end'>
+            <h2 className='text-sm text-right text-white md:text-2xl'>
+              Mint Date: {countDown.date}
+            </h2>
+            <h3 className='text-sm text-right md:text-2xl text-gradient'>
+              Seconds left: {countDown.seconds}
+            </h3>
+          </div>
+        </>
       ) : (
         <>
           {provider ? (
             <>
-              <h2 className='text-4xl'>BYK - {signer.balance}</h2>
+              <h2 className='text-4xl'>BYK - {signer.balance || 0}</h2>
               <div className='flex'>
                 <Button
                   onClick={handleFreeMint}
@@ -172,10 +161,13 @@ export default function NavBar ({ countDown }) {
                   className='w-full mr-2'
                 />
                 <Button
-                  label={`MINT \n ${price && ethers.utils.formatEther(price)}`}
+                  label={`MINT \n ${price ? price : ''}`}
                   className='w-full bg-grullo'
                   onClick={handleMint}
                 />
+                {
+                  signer.isOwner && <Button label={paused ? 'Start' : 'Pause'} onClick={handlePauseMint} className='ml-2 w-full bg-grullo'></Button>
+                }
               </div>
             </>
           ) : (
